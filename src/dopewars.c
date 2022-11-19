@@ -110,7 +110,7 @@ Player Noone;
 int LoanSharkLoc, BankLoc, GunShopLoc, RoughPubLoc;
 int DrugSortMethod = DS_ATOZ;
 int FightTimeout = 5, IdleTimeout = 14400, ConnectTimeout = 300;
-int MaxClients = 20, AITurnPause = 5;
+int MaxClients = 20, AITurnPause = 0;
 price_t StartCash = 2000, StartDebt = 5500;
 GSList *ServerList = NULL;
 
