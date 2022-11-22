@@ -245,20 +245,6 @@ void AISetName(Player *AIPlay)
 }
 
 /* 
- * Returns TRUE if it would be prudent to run away...
- */
-gboolean ShouldRun(Player *AIPlay)
-{
-  gint TotalHealth;
-
-  if (TotalGunsCarried(AIPlay) == 0)
-    return TRUE;
-
-  TotalHealth = AIPlay->Health + AIPlay->Bitches.Carried * 100;
-  return (TotalHealth < MINSAFEHEALTH);
-}
-
-/* 
  * Decodes the fighting-related message "Msg", and then decides whether
  * to stand or run...
  */
@@ -286,17 +272,11 @@ static void HandleCombat(Player *AIPlay, gchar *Msg)
   }
   PrintAIMessage(text);
 
-  if (ShouldRun(AIPlay)) {
-    if (CanRunHere) {
-      SendClientMessage(AIPlay, C_NONE, C_FIGHTACT, NULL, "R");
-    } else {
-      AIDealDrugs(AIPlay);
-      AIJet(AIPlay);
-    }
-  } else if (fp == F_LASTLEAVE) {
-    AIJet(AIPlay);
+  if (CanRunHere) {
+    SendClientMessage(AIPlay, C_NONE, C_FIGHTACT, NULL, "R");
   } else {
-    SendClientMessage(AIPlay, C_NONE, C_FIGHTACT, NULL, "F");
+    AIDealDrugs(AIPlay);
+    AIJet(AIPlay);
   }
 }
 
@@ -511,28 +491,6 @@ void AIDealDrugs(Player *AIPlay)
  */
 void AIGunShop(Player *AIPlay)
 {
-  int i;
-  int Bought;
-  gchar *text;
-
-  do {
-    Bought = 0;
-    for (i = 0; i < NumGun; i++) {
-      if (TotalGunsCarried(AIPlay) < AIPlay->Bitches.Carried + 2 &&
-          Gun[i].Space <= AIPlay->CoatSize &&
-          Gun[i].Price <= AIPlay->Cash - MINSAFECASH) {
-        AIPlay->Cash -= Gun[i].Price;
-        AIPlay->CoatSize -= Gun[i].Space;
-        AIPlay->Guns[i].Carried++;
-        Bought++;
-        dpg_print(_("Buying a %tde for %P at the gun shop\n"),
-                  Gun[i].Name, Gun[i].Price);
-        text = g_strdup_printf("gun^%d^1", i);
-        SendClientMessage(AIPlay, C_NONE, C_BUYOBJECT, NULL, text);
-        g_free(text);
-      }
-    }
-  } while (Bought);
   SendClientMessage(AIPlay, C_NONE, C_DONE, NULL, NULL);
 }
 
@@ -620,7 +578,7 @@ void AIHandleQuestion(char *Data, AICode AI, Player *AIPlay, Player *From)
               Location[AIPlay->IsAt].Name);
     }
     RealGunShop = AIPlay->IsAt;
-    AISendAnswer(AIPlay, From, "Y");
+    AISendAnswer(AIPlay, From, "N");
     break;
   case C_ASKPUB:
     if (RealPub == -1) {
@@ -635,7 +593,7 @@ void AIHandleQuestion(char *Data, AICode AI, Player *AIPlay, Player *From)
     AISendAnswer(AIPlay, From, "Y");
     break;
   case C_ASKRUNFIGHT:
-    AISendAnswer(AIPlay, From, ShouldRun(AIPlay) ? "R" : "F");
+    AISendAnswer(AIPlay, From, "R");
     break;
   case C_ASKBANK:
     if (RealBank == -1) {
