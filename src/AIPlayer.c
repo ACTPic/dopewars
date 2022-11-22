@@ -44,7 +44,6 @@ static void AIDealDrugs(Player *AIPlay);
 static void AIJet(Player *AIPlay);
 static void AIGunShop(Player *AIPlay);
 static void AIPayLoan(Player *AIPlay);
-static void AISendRandomMessage(Player *AIPlay);
 static void AISetName(Player *AIPlay);
 static void AIHandleQuestion(char *Data, AICode AI, Player *AIPlay,
                              Player *From);
@@ -333,8 +332,6 @@ int HandleAIMessage(char *Message, Player *AIPlay)
     tv.tv_sec = AITurnPause;
     tv.tv_usec = 0;
     bselect(0, NULL, NULL, NULL, &tv);
-    if (brandom(0, 100) < 10)
-      AISendRandomMessage(AIPlay);
     break;
   case C_UPDATE:
     WasFighting = FALSE;
@@ -605,24 +602,6 @@ void AIHandleQuestion(char *Data, AICode AI, Player *AIPlay, Player *From)
     AISendAnswer(AIPlay, From, "N");
     break;
   }
-}
-
-/* 
- * Sends a random message to all other dopewars players.
- */
-void AISendRandomMessage(Player *AIPlay)
-{
-  char *RandomInsult[5] = {
-    /* Random messages to send from the AI player to other players */
-    N_("Call yourselves drug dealers?"),
-    N_("A trained monkey could do better..."),
-    N_("Think you\'re hard enough to deal with the likes of me?"),
-    N_("Zzzzz... are you dealing in candy or what?"),
-    N_("Reckon I'll just have to shoot you for your own good.")
-  };
-
-  SendClientMessage(AIPlay, C_NONE, C_MSG, NULL,
-                    _(RandomInsult[brandom(0, 5)]));
 }
 
 #else /* NETWORKING */
