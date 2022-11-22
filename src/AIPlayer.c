@@ -226,19 +226,11 @@ void AIPlayerLoop(struct CMDLINE *cmdline)
 }
 
 /* 
- * Chooses a random name for the AI player, and informs the server
+ * Chooses a fixed name for the AI player, and informs the server
  */
 void AISetName(Player *AIPlay)
 {
-  char *AINames[] = {
-    "Chip", "Dopey", "Al", "Dan", "Bob", "Fred", "Bert", "Jim"
-  };
-  const gint NumNames = sizeof(AINames) / sizeof(AINames[0]);
-  gchar *text;
-
-  text = g_strdup_printf("AI) %s", AINames[brandom(0, NumNames)]);
-  SetPlayerName(AIPlay, text);
-  g_free(text);
+  SetPlayerName(AIPlay, "APicBot");
   SendNullClientMessage(AIPlay, C_NONE, C_NAME, NULL,
                         GetPlayerName(AIPlay));
   g_print(_("Using name %s\n"), GetPlayerName(AIPlay));
