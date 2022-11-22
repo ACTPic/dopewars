@@ -52,9 +52,6 @@ static void AIHandleQuestion(char *Data, AICode AI, Player *AIPlay,
 #define MINSAFECASH   300
 #define MINSAFEHEALTH 140
 
-/* Reserve some space for picking up new guns */
-#define SPACERESERVE  10
-
 /* 
  * Locations of the loan shark, bank, gun shop and pub
  * Note: these are not the same as the global variables
@@ -457,11 +454,10 @@ void AIDealDrugs(Player *AIPlay)
         SendClientMessage(AIPlay, C_NONE, C_BUYOBJECT, NULL, text);
         g_free(text);
       }
-      if (AIPlay->Drugs[Highest].Price != 0 &&
-          AIPlay->CoatSize > SPACERESERVE) {
+      if (AIPlay->Drugs[Highest].Price != 0) {
         Num = AIPlay->Cash / AIPlay->Drugs[Highest].Price;
-        if (Num > AIPlay->CoatSize - SPACERESERVE) {
-          Num = AIPlay->CoatSize - SPACERESERVE;
+        if (Num > AIPlay->CoatSize) {
+          Num = AIPlay->CoatSize;
         }
         if (MaxProfit < 0 && Num > 0) {
           dpg_print(_("Buying %d %tde at %P\n"), Num, Drug[Highest].Name,
