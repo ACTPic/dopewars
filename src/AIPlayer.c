@@ -496,10 +496,6 @@ void AIJet(Player *AIPlay)
   } else if (RealPub >= 0 && brandom(0, 100) < 30
              && AIPlay->Cash > MINSAFECASH * 10) {
     NewLocation = RealPub;
-  } else if (RealGunShop >= 0 && brandom(0, 100) < 70 &&
-             TotalGunsCarried(AIPlay) < AIPlay->Bitches.Carried + 2 &&
-             AIPlay->Cash > MINSAFECASH * 5) {
-    NewLocation = RealGunShop;
   }
   while (NewLocation == AIPlay->IsAt)
     NewLocation = brandom(0, NumLocation);
