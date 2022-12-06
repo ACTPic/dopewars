@@ -429,7 +429,26 @@ void AIDealDrugs(Player * AIPlay)
 		Profit[i] =
 		    AIPlay->Drugs[i].Price - (Drug[i].MaxPrice +
 					      Drug[i].MinPrice) / 2;
+                if(AIPlay->Drugs[i].Price) {
+                        dpg_print("%tde at %3d%% %P", Drug[i].Name,
+                                  AIPlay->Drugs[i].Price * 100 /
+                                  Drug[i].MaxPrice,
+                                  AIPlay->Drugs[i].Price);
+                        if(AIPlay->Drugs[i].Carried) {
+                                dpg_print(" have %3d @ %P %3d%%",
+                                          AIPlay->Drugs[i].Carried,
+                                          AIPlay->Drugs[i].TotalValue /
+                                          AIPlay->Drugs[i].Carried,
+                                          (AIPlay->Drugs[i].TotalValue /
+                                           AIPlay->Drugs[i].Carried) * 100 /
+                                          Drug[i].MaxPrice
+                                        );
+                        }
+                        dpg_print("; ");
+                }
 	}
+        dpg_print("\n");
+
 	MinProfit = 0;
 	for (i = 0; i < NumDrug; i++)
 		if (Profit[i] < MinProfit)
