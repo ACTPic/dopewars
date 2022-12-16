@@ -423,12 +423,16 @@ void AIDealDrugs(Player * AIPlay)
 	price_t *Profit, MaxProfit;
 	gchar *text;
 	int i, LastHighest, Highest, Num, MinProfit;
+	static int Turn = 0;
 	Profit = g_new(price_t, NumDrug);
 
-	for (i = 0; i < NumDrug; i++) {
+        dpg_print("Turn %02d\n", ++Turn);
+
+        for (i = 0; i < NumDrug; i++) {
 		Profit[i] =
 		    AIPlay->Drugs[i].Price - (Drug[i].MaxPrice +
 					      Drug[i].MinPrice) / 2;
+
                 if(AIPlay->Drugs[i].Price) {
                         dpg_print("%tde at %3d%% %P", Drug[i].Name,
                                   AIPlay->Drugs[i].Price * 100 /
@@ -472,7 +476,7 @@ void AIDealDrugs(Player * AIPlay)
 		LastHighest = Highest;
 		if (Highest >= 0) {
 			Num = AIPlay->Drugs[Highest].Carried;
-			if (MaxProfit > 0 && Num > 0) {
+			if ((Turn >= 59 || MaxProfit > 0) && Num > 0) {
 				dpg_print(_("Selling %d %tde at %P\n"),
 					  Num, Drug[Highest].Name,
 					  AIPlay->Drugs[Highest].Price);
@@ -486,19 +490,23 @@ void AIDealDrugs(Player * AIPlay)
 						  C_BUYOBJECT, NULL, text);
 				g_free(text);
 			}
-			if (AIPlay->Drugs[Highest].Price != 0) {
+			if (Turn <= 59 && AIPlay->Drugs[Highest].Price != 0) {
 				Num =
 				    AIPlay->Cash /
 				    AIPlay->Drugs[Highest].Price;
 				if (Num > AIPlay->CoatSize) {
 					Num = AIPlay->CoatSize;
 				}
+
+                                if(!AIPlay->Debt && AIPlay->Cash > 30000 &&
+                                   Drug[Highest].MinPrice < 1000)
+                                        continue;
+
 				if (MaxProfit < 0 && Num > 0) {
 					dpg_print(_
 						  ("Buying %d %tde at %P\n"),
 						  Num, Drug[Highest].Name,
-						  AIPlay->Drugs[Highest].
-						  Price);
+						  AIPlay->Drugs[Highest].Price);
 					text =
 					    g_strdup_printf("drug^%d^%d",
 							    Highest, Num);
