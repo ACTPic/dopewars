@@ -619,8 +619,10 @@ void AIHandleQuestion(char *Data, AICode AI, Player * AIPlay,
 		break;
 	case C_ASKBITCH:
 	case C_ASKRUN:
-	case C_ASKGUN:
 		AISendAnswer(AIPlay, From, "Y");
+		break;
+	case C_ASKGUN:
+		AISendAnswer(AIPlay, From, "N");
 		break;
 	case C_ASKRUNFIGHT:
 		AISendAnswer(AIPlay, From, "R");
