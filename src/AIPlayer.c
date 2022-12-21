@@ -498,6 +498,10 @@ void AIDealDrugs(Player * AIPlay)
 					Num = AIPlay->CoatSize;
 				}
 
+                                if(!AIPlay->Debt && AIPlay->Cash > 700000 &&
+                                   Drug[Highest].MinPrice < 10000)
+                                        continue;
+
                                 if(!AIPlay->Debt && AIPlay->Cash > 30000 &&
                                    Drug[Highest].MinPrice < 1000)
                                         continue;
@@ -547,8 +551,7 @@ void AIJet(Player * AIPlay)
 	if (RealLoanShark >= 0
 	    && AIPlay->Cash > (price_t) ((float) AIPlay->Debt * 1.2)) {
 		NewLocation = RealLoanShark;
-	} else if (RealPub >= 0 && brandom(0, 100) < 30
-		   && AIPlay->Cash > MINSAFECASH * 10) {
+	} else if (RealPub >= 0 && AIPlay->Cash > 130000) {
 		NewLocation = RealPub;
 	}
 	while (NewLocation == AIPlay->IsAt)
